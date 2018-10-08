@@ -40,7 +40,14 @@ namespace Huesie.ConsoleSPA
 
                     if (keyInfo.Value.KeyChar != 'Q' && keyInfo.Value.KeyChar != '|')
                     {
-                        OnKey?.Invoke(keyInfo.Value.KeyChar.ToString());
+                        if (!char.IsControl(keyInfo.Value.KeyChar))
+                        {
+                            OnKey?.Invoke(keyInfo.Value.KeyChar.ToString());
+                        }
+                        else
+                        {
+                            OnKey?.Invoke(keyInfo.Value.Key.ToString());
+                        }
                     }
 
                     HandleStandardKey(keyInfo);
