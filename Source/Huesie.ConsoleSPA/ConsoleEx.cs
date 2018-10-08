@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Huesie.ConsoleSPA
@@ -122,6 +123,11 @@ namespace Huesie.ConsoleSPA
         /// <param name="enhancedString">The enhanced string.</param>
         public static void WriteEnh(string enhancedString)
         {
+            if (enhancedString.Any(c => char.IsControl(c)))
+            {
+                throw new ArgumentException("Enhanced string must not contain control characters.", nameof(enhancedString));
+            }
+
             int visibleLength = 0;
 
             bool enhanceOn = false;
