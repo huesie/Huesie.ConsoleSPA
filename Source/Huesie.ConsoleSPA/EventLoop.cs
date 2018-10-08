@@ -105,7 +105,7 @@ namespace Huesie.ConsoleSPA
             }
         }
 
-        private static void ShortDelay()
+        public static void ShortDelay()
         {
             Task.Delay(ShortDelayDuration).GetAwaiter().GetResult();
         }
