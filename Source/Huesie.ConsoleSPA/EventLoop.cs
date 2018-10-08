@@ -28,8 +28,8 @@ namespace Huesie.ConsoleSPA
                     ConsoleEx.WrapInOutputLock(() => {
                         Console.CursorVisible = false;
                         Console.SetCursorPosition(0, 0);
-                        ConsoleEx.WriteLineEnh(SetTitle.Invoke().FixedWidthEnh(ConsoleEx.WindowWidth - 12) + "    " + DateTime.Now.ToStringHH24mmss());
-                        ConsoleEx.WriteLineEnh(SetKeysHelp.Invoke().FixedWidthEnh(ConsoleEx.WindowWidth - 8 /*16*/) + "  " + "- *Q*U|T" /*$" * R*estart - *Q*U|T"*/);
+                        ConsoleEx.WriteLineEnh((SetTitle?.Invoke() ?? "").FixedWidthEnh(ConsoleEx.WindowWidth - 12) + "    " + DateTime.Now.ToStringHH24mmss());
+                        ConsoleEx.WriteLineEnh((SetKeysHelp?.Invoke() ?? "").FixedWidthEnh(ConsoleEx.WindowWidth - 8 /*16*/) + "  " + "- *Q*U|T" /*$" * R*estart - *Q*U|T"*/);
 
                         OnRefresh?.Invoke();
                         Console.CursorVisible = true;
@@ -40,7 +40,14 @@ namespace Huesie.ConsoleSPA
 
                     if (keyInfo.Value.KeyChar != 'Q' && keyInfo.Value.KeyChar != '|')
                     {
-                        OnKey?.Invoke(keyInfo.Value.KeyChar.ToString());
+                        if (!char.IsControl(keyInfo.Value.KeyChar))
+                        {
+                            OnKey?.Invoke(keyInfo.Value.KeyChar.ToString());
+                        }
+                        else
+                        {
+                            OnKey?.Invoke(keyInfo.Value.Key.ToString());
+                        }
                     }
 
                     HandleStandardKey(keyInfo);
@@ -105,13 +112,13 @@ namespace Huesie.ConsoleSPA
             }
         }
 
-        private static void ShortDelay()
+        public static void ShortDelay()
         {
             Task.Delay(ShortDelayDuration).GetAwaiter().GetResult();
         }
 
-        public static Func<string> SetTitle { get; set; }
-        public static Func<string> SetKeysHelp { get; set; }
+        public static Func<string> SetTitle { get; set; } = () => "- replace title with SetTitle -";
+        public static Func<string> SetKeysHelp { get; set; } = () => "- replace keys help with SetKeysHelp -";
 
         public static Action<string> OnKey { get; set; }
         public static Action OnRefresh { get; set; }
